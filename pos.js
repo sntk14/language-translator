@@ -16,11 +16,9 @@ class PostFixAnalizer {
                     this.stack.push(this.postfixCode[i])
                 } else if (['jump', 'jf'].includes(this.postfixCode[i].token)) {
                     i = this.doJump(this.postfixCode[i].token, i)
-                } else if (this.postfixCode[i].token === 'swap'){//поменять местами 2 последние
-                    let oneLast = this.stack.pop()
-                    let twoLast = this.stack.pop()
-                    this.stack.push(oneLast)
-                    this.stack.push(twoLast)
+                } else if (this.postfixCode[i].token === 'func'){//поменять местами 2 последние
+                    this.stack.push(this.postfixCode[i])
+                    this.doFunc(i)
                 }
                 else {
                     this.doIt(this.postfixCode[i], i)
@@ -30,7 +28,9 @@ class PostFixAnalizer {
                     this.step++
                 }
             }
+
             if (this.isView) {
+                console.log('IDENTS:')
                 this.getIdents()
             }
         } catch (e) {
@@ -55,7 +55,21 @@ class PostFixAnalizer {
         return false
     }
 
+    doFunc(i){
+        let func = this.stack.pop()
+        let funcVal = this.stack.pop()
 
+        let lexeme = this.isIdent(funcVal)
+
+        switch (func.lexeme){
+            case 'echo':
+                console.log(lexeme)
+                break;
+            case 'read':
+                console.log('READ FUNCTION DOES NOT READ THE STREAM OF BYTES')
+        }
+        return 1
+    }
     doIt(el, ind) {
         if (el.lexeme == '=') {
             let oneLast = this.stack.pop()//значение

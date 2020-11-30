@@ -9,11 +9,10 @@ class SyncAnalizer {
         this.isBracket = 0//таблиця ПОЛІЗу
         this.isViewPOLIZSteps = debug
         this.POLIZStep = 1
-        this.isSetPostfixCode = 1
+        this.log = ''
     }
 
     getInPOLIZWrire(el) {
-        // if(el.lexeme != 'int' && el.lexeme != 'float')
         return el.lexeme
     }
 
@@ -39,10 +38,10 @@ class SyncAnalizer {
         return `m${len}`
     }
 
-    setLabelValue(label){
+    setLabelValue(label) {
         //indicate on tail
         this.labels = this.labels.map(l => {
-            if(l.label === label) l.value = this.postfixCode.length - 1
+            if (l.label === label) l.value = this.postfixCode.length - 1
             return l
         })
     }
@@ -53,8 +52,13 @@ class SyncAnalizer {
             this.parseToken('{', 'brackets_op')
             this.parseStatementList()
             this.parseToken('}', 'brackets_op')
-            if (this.isViewPOLIZSteps) console.log(this.postfixCode)
-            console.log('Успішне завершення синтаксичного аналізатора!')
+
+            if (this.isViewPOLIZSteps){
+                console.log('POSTFIX CODE:')
+                console.log(this.postfixCode)
+                console.log(this.log)
+            }
+            console.log('Успішне завершення синтаксичного аналізатора та перекладу в ПОЛІЗ!')
         } catch (e) {
             this.failParse(e);
             throw 'Синтаксичний аналізатор аварійно завершив роботу!'
@@ -65,7 +69,6 @@ class SyncAnalizer {
         if (this.row > (this.lexTable.length - 1)) throw `Помилка: очікували ${lexeme} [${token}]` //this.failParse(lexeme, token,this.row)
 
         let lexRow = this.getSymb()
-        //this.logger()
         if (lexRow.token == token && lexRow.lexeme == lexeme) {
             this.addRow()
             return true
@@ -203,6 +206,7 @@ class SyncAnalizer {
         }
         return true
     }
+
     parseBoolExpr(ext = 0) {
         let lexRow = this.getSymb()
         // this.parseTemp()
@@ -219,7 +223,7 @@ class SyncAnalizer {
             this.parseExpression()
             this.setPostfixCode(lexRow)
         } else {
-            if(ext) {
+            if (ext) {
                 return true
             } else {
                 throw 'Помилка логічного виразу'
@@ -345,40 +349,11 @@ class SyncAnalizer {
         let lexRow = this.getSymb()
         if (lexRow.lexeme === 'for') {
 
-            //============================= System vars =================================
-            // //Блок для первого прохода, дальше переменная перезапишется
-            // let rand = Math.random() * 100
-            // this.setPostfixCode({lexeme: 'bool', token: 'keyword'})
-            // this.setPostfixCode({lexeme: `_START_LOOP_${rand}`, token: 'ident'})
-            // this.setPostfixCode({lexeme: 'true', token: 'bool'})
-            // this.setPostfixCode({lexeme: '=', token: 'assign_op'})
-            // //Шаг цикла
-            // this.setPostfixCode({lexeme: 'float', token: 'keyword'})
-            // this.setPostfixCode({lexeme: `_STEP_LOOP_${rand}`, token: 'ident'})
-            // this.setPostfixCode({lexeme: '0.0', token: 'float'})
-            // this.setPostfixCode({lexeme: '=', token: 'assign_op'})
-            // //===========================================================================
-
-
-            // let labNam2 =  this.createLabel()   //labNam2 - метка для первого прохода в цикле и присвония НЗ
-            // let labNam3 =  this.createLabel()   //labNam3 - метка для перехода к списку действий
-
-            // this.setPostfixCode({lexeme: `_START_LOOP_${rand}`, token: 'ident'})
-            // this.setPostfixCode({lexeme: labNam2, token: 'label'})
-            // this.setPostfixCode({lexeme: 'JF', token: 'jf'})//если тру - присваиваем, иначе - добавляем шаг
-            //присвоние начального значения
             this.logger('For Statement')
             this.addRow()
             let iter = this.parseAssign()
             if (typeof iter !== 'string') throw 'Неправильний тип ітератора цикла.'
-            // this.setPostfixCode({lexeme: labNam3, token: 'label'})
-            // this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
-            // this.setLabelValue(labNam2)//увеличение шага
-            //iterator
 
-
-
-            // this.setLabelValue(labNam3)//начало стейтмента
             let labNam1 = this.createLabel()   //labNam1 - метка для возвращения в начало цикла
 
             this.parseToken('to', 'keyword')
@@ -419,23 +394,15 @@ class SyncAnalizer {
             this.addRow()
             this.parseToken('(', 'brackets_op')
 
-            // let labNam = this.createLabel()
-            // this.setPostfixCode({lexeme: labNam, token: 'label'})
-            // this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
-            // this.setLabelValue(labNam)
-
             do {
                 this.parseExpression();
+                this.setPostfixCode({lexeme: lexRow.lexeme, token: 'func'})
                 if (this.getSymb().token !== 'coma') break
                 this.addRow()
             } while (true)
-            this.setPostfixCode(lexRow)//end func
             this.parseToken(')', 'brackets_op')
         }
     }
-
-
-
 
 
     getPostfixCode() {
@@ -449,6 +416,7 @@ class SyncAnalizer {
             tabs += '\t'
         }
 
-        if (this.isViewPOLIZSteps) console.log(`${tabs} ${statement}`)
+        this.log += `${tabs} ${statement}\n`
+        // if (this.isViewPOLIZSteps) console.log(`${tabs} ${statement}`)
     }
 }
