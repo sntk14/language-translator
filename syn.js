@@ -61,7 +61,7 @@ class SyncAnalizer {
             console.log('Успішне завершення синтаксичного аналізатора та перекладу в ПОЛІЗ!')
         } catch (e) {
             this.failParse(e);
-            throw 'Синтаксичний аналізатор аварійно завершив роботу!'
+            throw  new Error('Синтаксичний аналізатор аварійно завершив роботу!')
         }
     }
 
@@ -298,7 +298,7 @@ class SyncAnalizer {
 
             this.isBracket--
         } else {
-            throw 'невідповідність у Expression.Factor'
+            throw `Невідповідність у числовому виразі на ${this.row} рядку`
         }
 
         if (lexRow.lexeme != '(') {

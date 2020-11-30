@@ -180,7 +180,7 @@ class LexAnalizer {
     fail() {
         if (this.state === -1) {
             console.log('у рядку ' + this.row + ' неочікуваний символ ' + this.char)
-            throw 'Лексичний аналізатор аварійно завершив роботу!'
+            throw  new Error('Лексичний аналізатор аварійно завершив роботу!')
         }
     }
 

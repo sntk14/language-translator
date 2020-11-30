@@ -33,6 +33,7 @@ class PostFixAnalizer {
                 console.log('IDENTS:')
                 this.getIdents()
             }
+            console.log("Успішне iнтерпретацiя ПОЛІЗу та виконання програми.")
         } catch (e) {
             //TODO uncomment all
 
@@ -150,7 +151,7 @@ class PostFixAnalizer {
                     this.setExpresion(lexeme, last)
                     break
                 case '/':
-                    if (lastLexeme == 0) throw `Ділення на 0 ${last.row} рядку`
+                    if (lastLexeme == 0) throw `Ділення на 0 в ${last.row} рядку`
                     lexeme = Number(oneLastLexeme) / Number(lastLexeme)
                     this.setExpresion(lexeme, last)
                     break

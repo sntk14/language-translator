@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>САПР</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+
+
+<body class="margin:auto">
+<h3>S20 PL</h3>
+<textarea type="text" name="code" cols="55" rows="25" id="code"></textarea><br>
+<hr>
+<input type="checkbox" checked="checked" name="lex" id="lex"/><span>Лексичний</span><br>
+<input type="checkbox" checked="checked" name="syn" id="syn"/><span>Синтаксичний + трансляція</span><br>
+<input type="checkbox" checked="checked" name="pol" id="pol"/><span>Інтерпретацiя</span><br>
+<hr>
+<input type="file" id='uploadfile' name='uploadfile' onchange="uploadCoordinates()">
+<input type="button" id="clean" value="Очистити"/>
+<input type="button" id="trans" value="Виконати">
+<script src="relations.js"></script>
+<script>
+    trans.onclick = function() {
+        let code = document.getElementById('code').value;
+        let lex = document.getElementById('lex').checked;
+        let syn = document.getElementById('syn').checked;
+        let pol = document.getElementById('pol').checked;
+        translate(code, lex, syn, pol)
+    };
+
+    clean.onclick = function() {
+        document.getElementById('code').value = '';
+        console.clear();
+    };
+
+
+    function uploadCoordinates() {
+        let file = document.getElementById("uploadfile")
+        const fileReader = new FileReader()
+        fileReader.readAsDataURL(file.files[0]);
+        fileReader.onload = (e) => {
+            let value = atob(e.target.result.substring(23))
+            document.getElementById('code').value = value;
+            // value = decode_utf8(value)
+        }
+    }
+
+</script>
+</body>
+</html>
