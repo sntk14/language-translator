@@ -288,6 +288,14 @@ class SyncAnalizer {
 
     parseTemp() {
         let lexRow = this.getSymb()
+        //если знак
+        let sing = false
+        if (lexRow.lexeme === '-' || lexRow.lexeme === '+') {
+            sing = lexRow.lexeme === '-' ? '-1' : '1'
+            this.addRow()
+            lexRow = this.getSymb()
+        }
+            // this.setPostfixCode({lexeme:'-', token: 'minus'})
 
         if (['int', 'float', 'ident'].includes(lexRow.token)) {
             this.addRow()
@@ -298,13 +306,20 @@ class SyncAnalizer {
             this.parseToken(')', 'brackets_op')
 
             this.isBracket--
+        } else if (lexRow.lexeme == '-'){
+            this.setPostfixCode({lexeme:'-', token: 'minus'})
         } else {
             throw `Невідповідність у числовому виразі на ${this.row} рядку`
         }
 
         if (lexRow.lexeme != '(') {
             this.setPostfixCode(lexRow)
+            if(sing){
+                this.setPostfixCode({lexeme: sing, token:'int'})
+                this.setPostfixCode({lexeme: '*', token:'mult_op'})
+            }
         }
+
         return true
     }
 
