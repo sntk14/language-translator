@@ -16,7 +16,13 @@ class PostFixAnalizer {
                     this.stack.push(this.postfixCode[i])
                 } else if (['jump', 'jf'].includes(this.postfixCode[i].token)) {
                     i = this.doJump(this.postfixCode[i].token, i)
-                } else {
+                } else if (this.postfixCode[i].token === 'swap'){//поменять местами 2 последние
+                    let oneLast = this.stack.pop()
+                    let twoLast = this.stack.pop()
+                    this.stack.push(oneLast)
+                    this.stack.push(twoLast)
+                }
+                else {
                     this.doIt(this.postfixCode[i], i)
                 }
                 if (this.isView) {
@@ -64,6 +70,7 @@ class PostFixAnalizer {
                     type = {}
                 } else {
                     this.stack.push(type)//извиняюсь, что снял)
+                    type = {}
                 }
 
                 // let types = this.isInteger(Number(oneLast.lexeme)) ? 'int' : 'float'//тип со значения переменной
@@ -111,54 +118,54 @@ class PostFixAnalizer {
             let last = this.stack.pop()
             let oneLast = this.stack.pop()
 
-            last.lexeme = this.isIdent(last)
-            oneLast.lexeme = this.isIdent(oneLast)
+            let lastLexeme = this.isIdent(last)
+            let oneLastLexeme = this.isIdent(oneLast)
 
             let lexeme = 0
             switch (el.lexeme) {
                 case '+':
-                    lexeme = Number(oneLast.lexeme) + Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) + Number(lastLexeme)
                     this.setExpresion(lexeme, last)
                     break
                 case '-':
-                    lexeme = Number(oneLast.lexeme) - Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) - Number(lastLexeme)
                     this.setExpresion(lexeme, last)
                     break
                 case '*':
-                    lexeme = Number(oneLast.lexeme) * Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) * Number(lastLexeme)
                     this.setExpresion(lexeme, last)
                     break
                 case '/':
-                    if (last.lexeme == 0) throw `Ділення на 0 ${last.row} рядку`
-                    lexeme = Number(oneLast.lexeme) / Number(last.lexeme)
+                    if (lastLexeme == 0) throw `Ділення на 0 ${last.row} рядку`
+                    lexeme = Number(oneLastLexeme) / Number(lastLexeme)
                     this.setExpresion(lexeme, last)
                     break
                 case '^':
-                    lexeme = Math.pow(Number(oneLast.lexeme), Number(last.lexeme))
+                    lexeme = Math.pow(Number(oneLastLexeme), Number(lastLexeme))
                     this.setExpresion(lexeme, last)
                     break
                 case '>':
-                    lexeme = Number(oneLast.lexeme) > Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) > Number(lastLexeme)
                     this.setBoolExpression(lexeme, last)
                     break
                 case '>=':
-                    lexeme = Number(oneLast.lexeme) >= Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) >= Number(lastLexeme)
                     this.setBoolExpression(lexeme, last)
                     break
                 case '<':
-                    lexeme = Number(oneLast.lexeme) < Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) < Number(lastLexeme)
                     this.setBoolExpression(lexeme, last)
                     break
                 case '<=':
-                    lexeme = Number(oneLast.lexeme) <= Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) <= Number(lastLexeme)
                     this.setBoolExpression(lexeme, last)
                     break
                 case '==':
-                    lexeme = Number(oneLast.lexeme) == Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) == Number(lastLexeme)
                     this.setBoolExpression(lexeme, last)
                     break
                 case '!=':
-                    lexeme = Number(oneLast.lexeme) != Number(last.lexeme)
+                    lexeme = Number(oneLastLexeme) != Number(lastLexeme)
                     this.setBoolExpression(lexeme, last)
                     break
             }

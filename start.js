@@ -1,14 +1,15 @@
-const program = "main {\n\
-int a = 5;\
-int b = 10;\
-for int i=0 to a+b step 1 do\
- echo ((i+1)/4);\
-next;\
+const program = "main { \n\
+int a = 5; \
+int b = 5; \
+for int i = 0 to a+b step 1 do \
+next \
+\
+a = a - 1; \
 }"
 
 let lex_debug = 0
-let sync_debug = 1
-let post_debug = 1
+let sync_debug = 0
+let post_debug = 0
 
 try {
     setTimeout(() => {

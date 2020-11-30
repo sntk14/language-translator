@@ -34,7 +34,7 @@ class SyncAnalizer {
     createLabel() {
         //return size of array, which is a number of label
         let len = this.labels.length
-        let val = this.postfixCode.length
+        let val = this.postfixCode.length - 1
         this.labels.push({label: `m${len}`, value: val})
         return `m${len}`
     }
@@ -42,7 +42,7 @@ class SyncAnalizer {
     setLabelValue(label){
         //indicate on tail
         this.labels = this.labels.map(l => {
-            if(l.label === label) l.value = this.postfixCode.length
+            if(l.label === label) l.value = this.postfixCode.length - 1
             return l
         })
     }
@@ -178,6 +178,7 @@ class SyncAnalizer {
             this.setPostfixCode(lexRow)
             this.parseExpression()
             this.setPostfixCode({lexeme: '='})
+            return lexRow.lexeme
         } else if (lexRow.lexeme == 'bool') {//логические значения присвоение
             this.setPostfixCode(lexRow)
             this.logger('BoolAssign Statement')
@@ -196,6 +197,7 @@ class SyncAnalizer {
             this.setPostfixCode(lexRow)
             this.parseBoolExpr(1)
             this.setPostfixCode({lexeme: '='})
+            return lexRow.lexeme
         } else {
             return false
         }
@@ -301,59 +303,12 @@ class SyncAnalizer {
         return true
     }
 
-
-    parseFor() {
-        let lexRow = this.getSymb()
-        if (lexRow.lexeme == 'for') {
-            this.logger('For Statement')
-            this.addRow()
-            this.parseAssign()
-            this.parseToken('to', 'keyword')
-            this.isSetPostfixCode = 0//не добавлять в полиз
-            this.parseExpression()
-            this.parseToken('step', 'keyword')
-            this.parseExpression()
-            this.isSetPostfixCode = 1//добавлять)
-            this.parseToken('do', 'keyword')
-            this.logger('Statement List:')
-            this.addLevel()
-            this.parseStatementList()
-            this.subLevel()
-            this.parseToken('next', 'keyword')
-        }
-    }
-
-
-    parseFunction() {
-        let lexRow = this.getSymb()
-        if (lexRow.lexeme == 'echo' || lexRow.lexeme == 'read') {
-            this.logger('Read/Echo Statement')
-            this.addRow()
-            this.parseToken('(', 'brackets_op')
-
-            // let labNam = this.createLabel()
-            // this.setPostfixCode({lexeme: labNam, token: 'label'})
-            // this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
-            // this.setLabelValue(labNam)
-
-            do {
-                this.parseExpression();
-                if (this.getSymb().token !== 'coma') break
-                this.addRow()
-            } while (true)
-            this.setPostfixCode(lexRow)//end func
-            this.parseToken(')', 'brackets_op')
-        }
-    }
-
     parseIf() {
         let lexRow = this.getSymb()
         if (lexRow.lexeme == 'if') {
             this.logger('If Statement')
             this.addRow()
-            this.isSetPostfixCode = 0
             this.parseBoolExpr()
-            this.isSetPostfixCode = 1
             this.parseToken('then', 'keyword')
 
             let labNam1 = this.createLabel()
@@ -384,6 +339,101 @@ class SyncAnalizer {
         return false
 
     }
+
+
+    parseFor() {
+        let lexRow = this.getSymb()
+        if (lexRow.lexeme === 'for') {
+
+            //============================= System vars =================================
+            // //Блок для первого прохода, дальше переменная перезапишется
+            // let rand = Math.random() * 100
+            // this.setPostfixCode({lexeme: 'bool', token: 'keyword'})
+            // this.setPostfixCode({lexeme: `_START_LOOP_${rand}`, token: 'ident'})
+            // this.setPostfixCode({lexeme: 'true', token: 'bool'})
+            // this.setPostfixCode({lexeme: '=', token: 'assign_op'})
+            // //Шаг цикла
+            // this.setPostfixCode({lexeme: 'float', token: 'keyword'})
+            // this.setPostfixCode({lexeme: `_STEP_LOOP_${rand}`, token: 'ident'})
+            // this.setPostfixCode({lexeme: '0.0', token: 'float'})
+            // this.setPostfixCode({lexeme: '=', token: 'assign_op'})
+            // //===========================================================================
+
+
+            // let labNam2 =  this.createLabel()   //labNam2 - метка для первого прохода в цикле и присвония НЗ
+            // let labNam3 =  this.createLabel()   //labNam3 - метка для перехода к списку действий
+
+            // this.setPostfixCode({lexeme: `_START_LOOP_${rand}`, token: 'ident'})
+            // this.setPostfixCode({lexeme: labNam2, token: 'label'})
+            // this.setPostfixCode({lexeme: 'JF', token: 'jf'})//если тру - присваиваем, иначе - добавляем шаг
+            //присвоние начального значения
+            this.logger('For Statement')
+            this.addRow()
+            let iter = this.parseAssign()
+            if (typeof iter !== 'string') throw 'Неправильний тип ітератора цикла.'
+            // this.setPostfixCode({lexeme: labNam3, token: 'label'})
+            // this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
+            // this.setLabelValue(labNam2)//увеличение шага
+            //iterator
+
+
+
+            // this.setLabelValue(labNam3)//начало стейтмента
+            let labNam1 = this.createLabel()   //labNam1 - метка для возвращения в начало цикла
+
+            this.parseToken('to', 'keyword')
+            this.parseExpression()
+
+            this.setPostfixCode({lexeme: iter, token: 'ident'})
+            this.setPostfixCode({lexeme: '>', token: 'rel_op'})
+            let labNam2 = this.createLabel()   //labNam1 - метка для завершения цикла
+            this.setPostfixCode({lexeme: labNam2, token: 'label'})
+            this.setPostfixCode({lexeme: 'JF', token: 'jf'})
+            this.setPostfixCode({lexeme: iter, token: 'ident'})
+            this.setPostfixCode({lexeme: iter, token: 'ident'})
+
+            this.parseToken('step', 'keyword')
+            this.parseExpression()
+
+            this.parseToken('do', 'keyword')
+            this.logger('Statement List:')
+            this.addLevel()
+            this.parseStatementList()
+            this.subLevel()
+            this.parseToken('next', 'keyword')
+
+
+            this.setPostfixCode({lexeme: '+', token: 'add_op'})
+            this.setPostfixCode({lexeme: '=', token: 'assing_op'})
+            this.setPostfixCode({lexeme: labNam1, token: 'label'})
+            this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
+            this.setLabelValue(labNam2)
+        }
+    }
+
+
+    parseFunction() {
+        let lexRow = this.getSymb()
+        if (lexRow.lexeme == 'echo' || lexRow.lexeme == 'read') {
+            this.logger('Read/Echo Statement')
+            this.addRow()
+            this.parseToken('(', 'brackets_op')
+
+            // let labNam = this.createLabel()
+            // this.setPostfixCode({lexeme: labNam, token: 'label'})
+            // this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
+            // this.setLabelValue(labNam)
+
+            do {
+                this.parseExpression();
+                if (this.getSymb().token !== 'coma') break
+                this.addRow()
+            } while (true)
+            this.setPostfixCode(lexRow)//end func
+            this.parseToken(')', 'brackets_op')
+        }
+    }
+
 
 
 
