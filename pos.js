@@ -35,8 +35,7 @@ class PostFixAnalizer {
             }
             console.log("Успішне iнтерпретацiя ПОЛІЗу та виконання програми.")
         } catch (e) {
-            //TODO uncomment all
-
+            //TODO uncomment all//OK
             // if(typeof e == "object"){
             //     console.log('Помилка в трансляції!!')
             // } else {
@@ -113,6 +112,11 @@ class PostFixAnalizer {
 
             //ДЛЯ ЧИСЕЛЬНЫХ ЗНАЧЕНИЙ
             //если переприсвоение, то закинуть тип обратно и взять тип со значения переменной
+            // let lastLexeme = this.isIdent(last)
+            if (oneLast.token === 'ident'){
+                oneLast = {...oneLast}
+                oneLast.lexeme = this.isIdent(oneLast)
+            }
             if (this.checkType(type, oneLast)) {
                 let ind = this.identTable.findIndex(i => i.value == last.lexeme)
                 if (ind < 0) throw 'Використана невідома змінна'

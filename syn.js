@@ -226,7 +226,8 @@ class SyncAnalizer {
             if (ext) {
                 return true
             } else {
-                throw 'Помилка логічного виразу'
+                lexRow = this.getSymb()
+                throw `Помилка логічного виразу y ${lexRow.row} рядку`
             }
         }
         return true
