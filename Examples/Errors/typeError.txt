@@ -1,0 +1,4 @@
+main{
+int a = 14.4;
+echo(a)
+}

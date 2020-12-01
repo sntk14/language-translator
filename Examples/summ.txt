@@ -1,0 +1,10 @@
+main{
+ int a = read()
+ int b = read()
+
+for int c = 0 to b step 1 do
+  a = a+1
+next 
+
+echo(a);
+}

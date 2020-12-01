@@ -1,0 +1,9 @@
+main{
+int a = 14;
+float b = 0;
+
+ float c = a\b
+
+ echo (c);
+
+}

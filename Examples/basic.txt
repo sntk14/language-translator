@@ -1,6 +1,6 @@
 main{
- bool a = 4 > 5;
- int a = 14;
+ bool zx = 4 > 5;
+ int a = read();
  int b = -14;
  float flo1 = 3.14;
  float flo2 = -3.14;
