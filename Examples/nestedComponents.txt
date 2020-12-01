@@ -1,0 +1,14 @@
+main{
+ float a = -2.655555555555;
+
+for float i = -100 to a*-1 step 2.5 do
+  echo(i);
+  for int j = 0 to 5^2 step 1 do
+    if i > j then
+        echo(i);
+    else
+        echo(j);
+    endif
+  next 
+next 
+}

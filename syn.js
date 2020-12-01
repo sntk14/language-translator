@@ -413,7 +413,7 @@ class SyncAnalizer {
     parseFunction() {
         let lexRow = this.getSymb()
         if (lexRow.lexeme == 'echo') {
-            this.logger('Read/Echo Statement')
+            this.logger('Echo Statement')
             this.addRow()
             this.parseToken('(', 'brackets_op')
 
@@ -426,7 +426,7 @@ class SyncAnalizer {
             this.parseToken(')', 'brackets_op')
         }
         if (lexRow.lexeme == 'read') {
-            this.logger('Read/Echo Statement')
+            this.logger('Read Function')
             this.addRow()
             this.parseToken('(', 'brackets_op')
             this.parseToken(')', 'brackets_op')
