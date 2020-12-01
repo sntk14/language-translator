@@ -21,13 +21,11 @@ class SyncAnalizer {
     }
 
     setPostfixCode(lexeme) {
-        // if (this.isSetPostfixCode) {
         this.postfixCode.push(lexeme)
         if (this.isViewPOLIZSteps) {
             console.log(`Крок трансляцiї:${this.POLIZStep} \n Лексема: ${this.getInPOLIZWrire(lexeme)} \n postfixCode: [${this.postfixCode.map(el => this.getInPOLIZWrire(el))}] \n`)
             if (lexeme != 'int' && lexeme != 'float') this.POLIZStep++
         }
-        // }
     }
 
     createLabel() {
@@ -53,7 +51,7 @@ class SyncAnalizer {
             this.parseStatementList()
             this.parseToken('}', 'brackets_op')
 
-            if (this.isViewPOLIZSteps){
+            if (this.isViewPOLIZSteps) {
                 console.log('POSTFIX CODE:')
                 console.log(this.postfixCode)
                 console.log(this.log)
@@ -295,7 +293,7 @@ class SyncAnalizer {
             this.addRow()
             lexRow = this.getSymb()
         }
-            // this.setPostfixCode({lexeme:'-', token: 'minus'})
+        // this.setPostfixCode({lexeme:'-', token: 'minus'})
 
         if (['int', 'float', 'ident'].includes(lexRow.token)) {
             this.addRow()
@@ -306,17 +304,18 @@ class SyncAnalizer {
             this.parseToken(')', 'brackets_op')
 
             this.isBracket--
-        } else if (lexRow.lexeme == '-'){
-            this.setPostfixCode({lexeme:'-', token: 'minus'})
+        } else if (lexRow.lexeme == '-') {
+            this.setPostfixCode({lexeme: '-', token: 'minus'})
         } else {
-            throw `Невідповідність у числовому виразі на ${this.row} рядку`
+            if (lexRow.lexeme.row) throw `Невідповідність у числовому виразі`
+            else throw `Невідповідність у числовому виразі на ${lexRow.lexeme.row} рядку`
         }
 
         if (lexRow.lexeme != '(') {
             this.setPostfixCode(lexRow)
-            if(sing){
-                this.setPostfixCode({lexeme: sing, token:'int'})
-                this.setPostfixCode({lexeme: '*', token:'mult_op'})
+            if (sing) {
+                this.setPostfixCode({lexeme: sing, token: 'int'})
+                this.setPostfixCode({lexeme: '*', token: 'mult_op'})
             }
         }
 
@@ -343,7 +342,7 @@ class SyncAnalizer {
             this.setPostfixCode({lexeme: labNam2, token: 'label'})
             this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
             this.setLabelValue(labNam1)
-            this.setPostfixCode({lexeme: labNam1, token: 'label'})
+            // this.setPostfixCode({lexeme: labNam1, token: 'label'})
 
             this.logger('Statement List:')
             this.addLevel()
@@ -352,7 +351,7 @@ class SyncAnalizer {
             this.parseToken('endif', 'keyword')
 
             this.setLabelValue(labNam2)
-            this.setPostfixCode({lexeme: labNam2, token: 'label'})
+            // this.setPostfixCode({lexeme: labNam2, token: 'label'})
 
             return true
         }
