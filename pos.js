@@ -13,12 +13,14 @@ class PostFixAnalizer {
         try {
             for (let i = 0; i < length; i++) {
                 if (['int', 'float', 'bool', 'ident', 'keyword', 'label'].includes(this.postfixCode[i].token)) {
-                    this.stack.push(this.postfixCode[i])
+                   if(this.postfixCode[i].lexeme === 'echo' || this.postfixCode[i].lexeme === 'read'){
+                       this.stack.push(this.postfixCode[i])
+                       this.doFunc(i)
+                   }else {
+                       this.stack.push(this.postfixCode[i])
+                   }
                 } else if (['jump', 'jf'].includes(this.postfixCode[i].token)) {
                     i = this.doJump(this.postfixCode[i].token, i)
-                } else if (this.postfixCode[i].token === 'func'){//поменять местами 2 последние
-                    this.stack.push(this.postfixCode[i])
-                    this.doFunc(i)
                 }
                 else {
                     this.doIt(this.postfixCode[i], i)
@@ -57,16 +59,16 @@ class PostFixAnalizer {
 
     doFunc(i){
         let func = this.stack.pop()
-        let funcVal = this.stack.pop()
 
-        let lexeme = this.isIdent(funcVal)
 
         switch (func.lexeme){
             case 'echo':
+                let funcVal = this.stack.pop()
+                let lexeme = this.isIdent(funcVal)
                 console.log(lexeme)
                 break;
             case 'read':
-                console.log('READ FUNCTION DOES NOT READ THE STREAM OF BYTES')
+                // console.log('reading...')
         }
         return 1
     }

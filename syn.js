@@ -287,8 +287,9 @@ class SyncAnalizer {
     parseTemp() {
         let lexRow = this.getSymb()
         //если знак
+
         let sing = false
-        if (lexRow.lexeme === '-' || lexRow.lexeme === '+') {
+        if (lexRow.lexeme === '-') {
             sing = lexRow.lexeme === '-' ? '-1' : '1'
             this.addRow()
             lexRow = this.getSymb()
@@ -306,6 +307,8 @@ class SyncAnalizer {
             this.isBracket--
         } else if (lexRow.lexeme == '-') {
             this.setPostfixCode({lexeme: '-', token: 'minus'})
+        } else if (lexRow.lexeme == 'read') {
+            this.parseFunction()
         } else {
             if (lexRow.lexeme.row) throw `Невідповідність у числовому виразі`
             else throw `Невідповідність у числовому виразі на ${lexRow.lexeme.row} рядку`
@@ -320,6 +323,11 @@ class SyncAnalizer {
         }
 
         return true
+    }
+
+
+    isInteger(num) {
+        return (num ^ 0) === num;
     }
 
     parseIf() {
@@ -404,18 +412,32 @@ class SyncAnalizer {
 
     parseFunction() {
         let lexRow = this.getSymb()
-        if (lexRow.lexeme == 'echo' || lexRow.lexeme == 'read') {
+        if (lexRow.lexeme == 'echo') {
             this.logger('Read/Echo Statement')
             this.addRow()
             this.parseToken('(', 'brackets_op')
 
             do {
                 this.parseExpression();
-                this.setPostfixCode({lexeme: lexRow.lexeme, token: 'func'})
+                this.setPostfixCode({lexeme: lexRow.lexeme, token: lexRow.token})
                 if (this.getSymb().token !== 'coma') break
                 this.addRow()
             } while (true)
             this.parseToken(')', 'brackets_op')
+        }
+        if (lexRow.lexeme == 'read') {
+            this.logger('Read/Echo Statement')
+            this.addRow()
+            this.parseToken('(', 'brackets_op')
+            this.parseToken(')', 'brackets_op')
+
+            let temp = prompt('Значення зміної:')
+            let type
+            temp = Number(temp)
+            if (temp == NaN) throw 'Введена неправильна зміна!'
+
+            type = this.isInteger(temp) ? 'int' : 'float'
+            this.setPostfixCode({lexeme: temp, token: type})
         }
     }
 
