@@ -37,12 +37,11 @@ class PostFixAnalizer {
             }
             console.log("Успішне iнтерпретацiя ПОЛІЗу та виконання програми.")
         } catch (e) {
-            //TODO uncomment all//OK
-            // if(typeof e == "object"){
-            //     console.log('Помилка в трансляції!!')
-            // } else {
+            if(typeof e == "object"){
+                console.log('Помилка в трансляції!!')
+            } else {
             console.log(e)
-            // }
+            }
         }
     }
 
