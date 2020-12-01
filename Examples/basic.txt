@@ -1,0 +1,22 @@
+main{
+ bool a = 4 > 5;
+ int a = 14;
+ int b = -14;
+ float flo1 = 3.14;
+ float flo2 = -3.14;
+ float ex = 1.4е2;
+ float ex1 = 1.4е2^2;
+
+ bool it = false
+ if a + b > ex then
+   echo(a+b-ex)
+ else
+   for int i = 1 to ex/2-1 step 1 do
+     it = 13^2+i < 14^2
+   next
+   echo(it);
+   bool boolExp1A5 = 1>=5;
+   bool boolExp14NE14 = 14 != 14;
+   bool boolExp55E55 = 55 == (5+2)*25;
+ endif
+}

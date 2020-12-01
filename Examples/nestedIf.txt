@@ -1,0 +1,19 @@
+main{
+   int a = 52;
+   float b = 4234/935;
+   if a > b then
+      float c = 14.14е3
+      if c > a+b then
+        echo(c,a+b);
+      else
+        echo(c,a-b);
+      endif
+   else
+      float c = 14.14е-3
+      if c > a+b then
+        echo(c,a*2+b*2);
+      else
+        echo(c,a*2-b*2);
+      endif
+   endif
+}

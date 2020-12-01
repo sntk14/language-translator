@@ -1,0 +1,15 @@
+main{
+
+int num = 5;
+int degr = 2;
+
+int funcDeg = num^degr;
+int loopDeg = num;
+
+for int i = 1 to degr step 1 do
+   loopDeg = loopDeg * num;
+next
+
+echo(loopDeg)
+echo(funcDeg)
+}

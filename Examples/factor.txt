@@ -1,0 +1,11 @@
+main{
+  int num = 5;
+  int factor = 1;
+
+
+  for int f = 1 to num+1 step 1 do
+    factor = factor * f;
+  next
+
+  echo(factor);
+}
