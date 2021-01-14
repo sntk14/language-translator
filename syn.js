@@ -54,6 +54,7 @@ class SyncAnalizer {
             if (this.isViewPOLIZSteps) {
                 console.log('POSTFIX CODE:')
                 console.log(this.postfixCode)
+                console.log(this.labels)
                 console.log(this.log)
             }
             console.log('Успішне завершення синтаксичного аналізатора та перекладу в ПОЛІЗ!')
@@ -310,8 +311,9 @@ class SyncAnalizer {
         } else if (lexRow.lexeme == 'read') {
             this.parseFunction()
         } else {
-            if (lexRow.lexeme.row) throw `Невідповідність у числовому виразі`
-            else throw `Невідповідність у числовому виразі на ${lexRow.lexeme.row} рядку`
+            throw `Неочікувана лексема ${lexRow.row ? lexRow.row+' рядку' : ''}`;
+            // if (!lexRow.lexeme.row) throw `Невідповідність у числовому виразі`
+            // else throw `Невідповідність у числовому виразі на ${lexRow.lexeme.row} рядку`
         }
 
         if (lexRow.lexeme != '(') {
@@ -350,7 +352,6 @@ class SyncAnalizer {
             this.setPostfixCode({lexeme: labNam2, token: 'label'})
             this.setPostfixCode({lexeme: 'JMP', token: 'jump'})
             this.setLabelValue(labNam1)
-            // this.setPostfixCode({lexeme: labNam1, token: 'label'})
 
             this.logger('Statement List:')
             this.addLevel()
@@ -359,7 +360,6 @@ class SyncAnalizer {
             this.parseToken('endif', 'keyword')
 
             this.setLabelValue(labNam2)
-            // this.setPostfixCode({lexeme: labNam2, token: 'label'})
 
             return true
         }
