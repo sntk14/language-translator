@@ -1,0 +1,46 @@
+main{
+int a = read();
+int b = read();
+
+echo(1);
+if a >= b then
+  echo(1, a, b)
+else
+  echo(0, a, b)
+endif
+
+echo(2);
+if a < b then
+  echo(1, a, b)
+else
+  echo(0, a, b)
+endif
+
+echo(3);
+if a == b then
+  echo(1,1, a, b)
+else
+  echo(1,0, a, b)
+endif
+
+echo(4);
+if a != b then
+  echo(1, a, b)
+else
+  echo(0, a, b)
+endif
+
+echo(5);
+if a <= b then
+  echo(1, a, b)
+else
+  echo(0, a, b)
+endif
+
+echo(6);
+if a > b then
+  echo(1, a, b)
+else
+  echo(0, a, b)
+endif
+}

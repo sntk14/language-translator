@@ -1,0 +1,5 @@
+main{
+for int a = -100 to to 100 step 5 do
+  echo(a)
+next
+}
